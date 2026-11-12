@@ -65,7 +65,15 @@ jobs:
         run: npm install -g wait-port
 
       - name: Run server
-        run: npm run start & wait-port -t 30000 localhost:3001
+        env:
+          PORT: 3001
+        run: |
+          node app.js > "$RUNNER_TEMP/se-project-express.log" 2>&1 &
+          echo "$!" > "$RUNNER_TEMP/se-project-express.pid"
+          if ! wait-port -t 30000 localhost:3001; then
+            cat "$RUNNER_TEMP/se-project-express.log"
+            exit 1
+          fi
 
       - name: Run test endpoints for 12
         if: ${{ needs.get_sprint_number.outputs.sprint == '12' }}
@@ -81,3 +89,11 @@ jobs:
         if: ${{ needs.get_sprint_number.outputs.sprint == '13' }}
         working-directory: se-actions-tests-p
         run: bash ./bin/test-endpoints-13.sh
+
+      - name: Stop server
+        if: always()
+        run: |
+          if [ -f "$RUNNER_TEMP/se-project-express.pid" ]; then
+            kill "$(cat "$RUNNER_TEMP/se-project-express.pid")" || true
+            rm -f "$RUNNER_TEMP/se-project-express.pid"
+          fi
