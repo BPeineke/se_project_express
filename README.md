@@ -12,12 +12,12 @@ The back-end project is focused on creating a server for the WTWR application. Y
 
 ## Running the Project
 
-`npm run start` — to launch the server on port 3001 by default
+`npm run start` — to launch the server at `http://localhost:3001` by default
 
-`npm run dev` — to launch the server with hot reload on port 3001 by default
+`npm run dev` — to launch the server with hot reload at `http://localhost:3001` by default
 
 The server reads the `PORT` environment variable if you need to use a different port.
 
 ### Testing
 
-Before committing your code, make sure you edit the file `sprint.txt` in the root folder. The file `sprint.txt` should contain the number of the sprint you're currently working on. For ex. 12
+Before committing your code, make sure you edit the file `sprint.txt` in the root folder. The file `sprint.txt` should contain the number of the sprint you’re currently working on. For ex. 12
