@@ -1,5 +1,6 @@
 const ClothingItem = require('../models/ClothingItem');
 const handleControllerError = require('../utils/handleControllerError');
+const { NOT_FOUND } = require('../utils/errors');
 
 const getItems = (req, res) => ClothingItem.find({})
   .then((items) => res.send(items))
@@ -17,7 +18,7 @@ const createClothingItem = (req, res) => ClothingItem.create({
 const deleteClothingItem = (req, res) => ClothingItem.findByIdAndDelete(req.params.itemId)
   .orFail(() => {
     const error = new Error('Item not found');
-    error.statusCode = 404;
+    error.statusCode = NOT_FOUND;
     throw error;
   })
   .then((item) => res.send(item))
@@ -30,7 +31,7 @@ const likeItem = (req, res) => ClothingItem.findByIdAndUpdate(
 )
   .orFail(() => {
     const error = new Error('Item not found');
-    error.statusCode = 404;
+    error.statusCode = NOT_FOUND;
     throw error;
   })
   .then((item) => res.send(item))
@@ -43,7 +44,7 @@ const dislikeItem = (req, res) => ClothingItem.findByIdAndUpdate(
 )
   .orFail(() => {
     const error = new Error('Item not found');
-    error.statusCode = 404;
+    error.statusCode = NOT_FOUND;
     throw error;
   })
   .then((item) => res.send(item))
@@ -56,3 +57,4 @@ module.exports = {
   likeItem,
   dislikeItem,
 };
+

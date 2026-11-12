@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const handleControllerError = require('../utils/handleControllerError');
+const { NOT_FOUND } = require('../utils/errors');
 
 const getUsers = (req, res) => User.find({})
   .then((users) => res.send(users))
@@ -8,7 +9,7 @@ const getUsers = (req, res) => User.find({})
 const getUser = (req, res) => User.findById(req.params.userId)
   .orFail(() => {
     const error = new Error('User not found');
-    error.statusCode = 404;
+    error.statusCode = NOT_FOUND;
     throw error;
   })
   .then((user) => res.send(user))
@@ -26,3 +27,4 @@ module.exports = {
   getUser,
   createUser,
 };
+
