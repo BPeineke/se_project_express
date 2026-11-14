@@ -1,24 +1,32 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const usersRouter = require('./routes/users');
 const clothingItemsRouter = require('./routes/clothingItems');
+const auth = require('./middlewares/auth');
+const { createUser, login } = require('./controllers/users');
 
-const { PORT = 3001 } = process.env;
+const {
+  PORT = 3001,
+  MONGODB_URI = 'mongodb://127.0.0.1:27017/wtwr_db',
+} = process.env;
 const app = express();
 
-mongoose.connect('mongodb://127.0.0.1:27017/wtwr_db');
+mongoose.connect(MONGODB_URI);
 
 app.use(express.json());
+app.use(cors());
 
-// Temporary authorization until the next project sprint.
-app.use((req, res, next) => {
-  req.user = {
-    _id: '6af44ae9522bbd08c810f65b',
-  };
-  next();
+app.post('/signup', createUser);
+app.post('/signin', login);
+
+app.use('/users', auth, usersRouter);
+app.use('/items', (req, res, next) => {
+  if (req.method === 'GET' && req.path === '/') {
+    return next();
+  }
+  return auth(req, res, next);
 });
-
-app.use('/users', usersRouter);
 app.use('/items', clothingItemsRouter);
 
 app.use((req, res) => {
