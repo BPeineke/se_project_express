@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
-const validator = require('validator');
-const { UNAUTHORIZED } = require('../utils/errors');
+const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
+const validator = require("validator");
+const { UNAUTHORIZED } = require("../utils/errors");
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
       validator(value) {
         return validator.isURL(value);
       },
-      message: 'You must enter a valid URL',
+      message: "You must enter a valid URL",
     },
   },
   email: {
@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
       validator(value) {
         return validator.isEmail(value);
       },
-      message: 'You must enter a valid email address',
+      message: "You must enter a valid email address",
     },
   },
   password: {
@@ -39,19 +39,22 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.statics.findUserByCredentials = function findUserByCredentials(email, password) {
+userSchema.statics.findUserByCredentials = function findUserByCredentials(
+  email,
+  password
+) {
   return this.findOne({ email: email.toLowerCase() })
-    .select('+password')
+    .select("+password")
     .then((user) => {
       if (!user) {
-        const error = new Error('Incorrect email or password');
+        const error = new Error("Incorrect email or password");
         error.statusCode = UNAUTHORIZED;
         throw error;
       }
 
       return bcrypt.compare(password, user.password).then((matched) => {
         if (!matched) {
-          const error = new Error('Incorrect email or password');
+          const error = new Error("Incorrect email or password");
           error.statusCode = UNAUTHORIZED;
           throw error;
         }
@@ -60,4 +63,4 @@ userSchema.statics.findUserByCredentials = function findUserByCredentials(email,
     });
 };
 
-module.exports = mongoose.model('user', userSchema);
+module.exports = mongoose.model("user", userSchema);
