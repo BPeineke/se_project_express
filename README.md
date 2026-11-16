@@ -1,6 +1,6 @@
 # WTWR (What to Wear?): Back End
 
-The back-end project is focused on creating a server for the WTWR application. You’ll gain a deeper understanding of how to work with databases, set up security and testing, and deploy web applications on a remote machine. The eventual goal is to create a server with an API and user authorization.
+The back-end project is focused on creating a server for the WTWR application. I gained a deeper understanding of how to work with databases, set up security and testing, and deploy web applications on a remote machine. The eventual goal is to create a server with an API and user authorization.
 
 ## Technologies and Tools
 
@@ -18,6 +18,7 @@ The back-end project is focused on creating a server for the WTWR application. Y
 
 The server reads the `PORT` environment variable if you need to use a different port.
 
-### Testing
+## Project Pitch Video
 
-Before committing your code, make sure you edit the file `sprint.txt` in the root folder. The file `sprint.txt` should contain the number of the sprint you’re currently working on. For ex. 12
+Check out [https://drive.google.com/file/d/1uL-kUeIwJ2bEgoY8vvB9ADTfJffQ07lG/view?usp=sharing], where I describe my
+project and some challenges I faced while building it.
