@@ -5,6 +5,7 @@ const usersRouter = require('./routes/users');
 const clothingItemsRouter = require('./routes/clothingItems');
 const auth = require('./middlewares/auth');
 const { createUser, login } = require('./controllers/users');
+const { NOT_FOUND } = require('./utils/errors');
 
 const {
   PORT = 3001,
@@ -30,7 +31,7 @@ app.use('/items', (req, res, next) => {
 app.use('/items', clothingItemsRouter);
 
 app.use((req, res) => {
-  res.status(404).send({ message: 'Requested resource not found' });
+  res.status(NOT_FOUND).send({ message: 'Requested resource not found' });
 });
 
 const server = app.listen(PORT, () => {
