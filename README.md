@@ -1,38 +1,49 @@
-# WTWR (What to Wear?): Back End
+# WTWR (What to Wear?) Backend
 
-The back-end project is focused on creating a server for the WTWR application. I gained a deeper understanding of how to work with databases, set up security and testing, and deploy web applications on a remote machine. The eventual goal is to create a server with an API and user authorization.
+WTWR recommends clothing based on the current weather. The Express API lets
+visitors browse clothing cards and lets signed-in users manage their profile,
+add their own cards, and like or unlike items. Users can delete only the cards
+they created.
 
-## Deployed Application
+## Live Project
 
-- [WTWR frontend](https://wtwer.spacetechnology.net/)
-- [WTWR API](https://api.wtwer.spacetechnology.net/items)
-- [Frontend GitHub repository](https://github.com/BPeineke/se_project_react)
+- [WTWR frontend](https://wtwer.spacetechnology.net/) and [www address](https://www.wtwer.spacetechnology.net/)
+- [Production API](https://api.wtwer.spacetechnology.net/items)
+- [Public frontend repository](https://github.com/BPeineke/se_project_react)
 
-## Technologies and Tools
+## Technologies and Techniques
 
-- Node.js and Express for the server and API routes
-- MongoDB and Mongoose for data storage and schemas
-- Validator for URL validation
-- ESLint with the Airbnb Base configuration and Prettier for code quality
-- Nodemon for automatic server restarts during development
+- React, Vite, and React Router provide the frontend, weather-based card display, and profile navigation.
+- Node.js, Express, MongoDB, and Mongoose provide the REST API and persist users and clothing items. bcrypt hashes passwords, and JWTs authenticate protected requests.
+- Celebrate and Joi validate incoming data, and Validator checks image URLs. Centralized error handling returns JSON messages, and Winston writes separate request and error logs.
+- Google Cloud hosts the full stack. Nginx serves the React build over HTTPS and proxies the API hostname to Express. PM2 supervises the backend and restores it at boot. The production JWT signing key is loaded from a private `.env` file.
+- ESLint with Airbnb Base and Prettier check code quality and formatting. Jest and Supertest run the backend endpoint test.
 
-## Running the Project
+## Run Locally
 
-`npm run start` — to launch the server at `http://localhost:3001` by default
+Use Node.js 22 and start MongoDB locally, then run:
 
-`npm run dev` — to launch the server with hot reload at `http://localhost:3001` by default
+```bash
+npm ci
+npm run dev
+```
 
-The server reads the `PORT` environment variable if you need to use a different port.
+The API defaults to `http://localhost:3001` and connects to
+`mongodb://127.0.0.1:27017/wtwr_db`. Use `npm start` to run without hot reload.
+Use `npm run lint` and `npm test` for the backend checks.
+
+An optional local `.env` can set `PORT`, `MONGODB_URI`, or `JWT_SECRET`.
+Production requires `JWT_SECRET`. The `.env`, `request.log`, and `error.log` files are ignored by Git.
 
 ## Crash Recovery Review
 
-For a local PM2 check, start the backend with `ENABLE_CRASH_TEST=true`, issue
-`GET /crash-test`, and confirm that PM2 relaunches the process and
-`GET /items` succeeds. The route is disabled in production. On the VM, a
-server operator can test the same PM2 recovery by sending a termination
-signal to the managed Express process and checking that PM2 assigns a new
-PID and the API responds again.
+For a local PM2 check, start the backend with `ENABLE_CRASH_TEST=true`, send
+`GET /crash-test`, and verify that PM2 relaunches the process and that
+`GET /items` succeeds again. The route is disabled in production. On the VM,
+PM2 recovery was verified by terminating the managed Express process and
+confirming that PM2 started a new process and the API responded again.
 
 ## Project Pitch Video
 
-[Existing WTWR pitch video](https://drive.google.com/file/d/1uL-kUeIwJ2bEgoY8vvB9ADTfJffQ07lG/view?usp=sharing)
+A demo video of the frontend and backend of the project
+https://youtu.be/4IdPIwAX0UM
