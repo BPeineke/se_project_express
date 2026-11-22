@@ -3,25 +3,24 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const handleControllerError = require("../utils/handleControllerError");
 const { JWT_SECRET } = require("../utils/config");
-const { NOT_FOUND, BAD_REQUEST } = require("../utils/errors");
+const { NotFoundError, BadRequestError } = require("../errors");
 
-const getCurrentUser = (req, res) =>
+const getCurrentUser = (req, res, next) =>
   User.findById(req.user._id)
-    .orFail(() => {
-      const error = new Error("User not found");
-      error.statusCode = NOT_FOUND;
-      throw error;
-    })
+    .orFail(() => new NotFoundError("User not found"))
     .then((user) => res.send(user))
-    .catch((error) => handleControllerError(res, error, "user"));
+    .catch((error) => next(handleControllerError(error, "user")));
 
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   const { name, avatar, email, password } = req.body;
 
-  if (!email || !password) {
-    const error = new Error("Email and password are required");
-    error.statusCode = BAD_REQUEST;
-    return handleControllerError(res, error, "user");
+  if (
+    typeof email !== "string" ||
+    !email ||
+    typeof password !== "string" ||
+    !password
+  ) {
+    return next(new BadRequestError("Email and password are required"));
   }
 
   return bcrypt
@@ -39,16 +38,19 @@ const createUser = (req, res) => {
       delete userData.password;
       return res.status(201).send(userData);
     })
-    .catch((error) => handleControllerError(res, error, "user"));
+    .catch((error) => next(handleControllerError(error, "user")));
 };
 
-const login = (req, res) => {
+const login = (req, res, next) => {
   const { email, password } = req.body;
 
-  if (!email || !password) {
-    const error = new Error("Email and password are required");
-    error.statusCode = BAD_REQUEST;
-    return handleControllerError(res, error, "user");
+  if (
+    typeof email !== "string" ||
+    !email ||
+    typeof password !== "string" ||
+    !password
+  ) {
+    return next(new BadRequestError("Email and password are required"));
   }
 
   return User.findUserByCredentials(email, password)
@@ -58,10 +60,10 @@ const login = (req, res) => {
       });
       return res.send({ token });
     })
-    .catch((error) => handleControllerError(res, error, "user"));
+    .catch((error) => next(handleControllerError(error, "user")));
 };
 
-const updateCurrentUser = (req, res) => {
+const updateCurrentUser = (req, res, next) => {
   const updates = {};
   ["name", "avatar"].forEach((field) => {
     if (Object.prototype.hasOwnProperty.call(req.body, field)) {
@@ -74,13 +76,9 @@ const updateCurrentUser = (req, res) => {
     { $set: updates },
     { new: true, runValidators: true }
   )
-    .orFail(() => {
-      const error = new Error("User not found");
-      error.statusCode = NOT_FOUND;
-      throw error;
-    })
+    .orFail(() => new NotFoundError("User not found"))
     .then((user) => res.send(user))
-    .catch((error) => handleControllerError(res, error, "user"));
+    .catch((error) => next(handleControllerError(error, "user")));
 };
 
 module.exports = {

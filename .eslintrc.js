@@ -6,6 +6,10 @@ module.exports = {
   extends: ["eslint:recommended", "airbnb-base", "prettier"],
   overrides: [
     {
+      files: ["errors/index.js"],
+      rules: { "max-classes-per-file": ["error", 6] },
+    },
+    {
       env: {
         node: true,
       },
@@ -20,6 +24,7 @@ module.exports = {
     sourceType: "module",
   },
   rules: {
+    "no-unused-vars": ["error", { argsIgnorePattern: "next" }],
     "no-console": "off",
     "no-underscore-dangle": ["error", { allow: ["_id"] }],
   },
