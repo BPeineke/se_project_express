@@ -1,48 +1,9 @@
-const {
-  BAD_REQUEST,
-  UNAUTHORIZED,
-  FORBIDDEN,
-  NOT_FOUND,
-  CONFLICT,
-} = require("../utils/errors");
-
-class HttpError extends Error {
-  constructor(statusCode, message) {
-    super(message);
-    this.name = this.constructor.name;
-    this.statusCode = statusCode;
-  }
-}
-
-class BadRequestError extends HttpError {
-  constructor(message) {
-    super(BAD_REQUEST, message);
-  }
-}
-
-class UnauthorizedError extends HttpError {
-  constructor(message) {
-    super(UNAUTHORIZED, message);
-  }
-}
-
-class ForbiddenError extends HttpError {
-  constructor(message) {
-    super(FORBIDDEN, message);
-  }
-}
-
-class NotFoundError extends HttpError {
-  constructor(message) {
-    super(NOT_FOUND, message);
-  }
-}
-
-class ConflictError extends HttpError {
-  constructor(message) {
-    super(CONFLICT, message);
-  }
-}
+const HttpError = require("./http-error");
+const BadRequestError = require("./bad-request-error");
+const UnauthorizedError = require("./unauthorized-error");
+const ForbiddenError = require("./forbidden-error");
+const NotFoundError = require("./not-found-error");
+const ConflictError = require("./conflict-error");
 
 module.exports = {
   HttpError,

@@ -1,17 +1,9 @@
-const { isCelebrateError } = require("celebrate");
 const { HttpError } = require("../errors");
-const { BAD_REQUEST, SERVER_ERROR } = require("../utils/errors");
+const { SERVER_ERROR } = require("../utils/errors");
 
 module.exports = (err, req, res, next) => {
   if (res.headersSent) {
     return next(err);
-  }
-
-  if (isCelebrateError(err)) {
-    const [validation] = err.details.values();
-    return res
-      .status(BAD_REQUEST)
-      .send({ message: validation?.message || "Invalid request data" });
   }
 
   if (err instanceof HttpError) {

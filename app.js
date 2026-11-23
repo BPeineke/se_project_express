@@ -3,6 +3,7 @@ require("dotenv").config({ quiet: true });
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const { errors } = require("celebrate");
 const router = require("./routes");
 const errorHandler = require("./middlewares/error-handler");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
@@ -28,6 +29,7 @@ if (
 
 app.use(router);
 app.use(errorLogger);
+app.use(errors());
 app.use(errorHandler);
 
 if (process.env.NODE_ENV !== "test") {
